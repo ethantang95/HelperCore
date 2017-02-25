@@ -14,13 +14,13 @@ namespace HelperCoreTests.OptionalTests
         [Test]
         public void TestCreatingOptionalFromObject()
         {
-            var dummy = Optional<DummyClass>.From(new DummyClass());
+            var dummy = Optional.From(new DummyClass());
         }
 
         [Test]
         public void TestCreatingOptionalFromValue()
         {
-            var value = Optional<int>.From(10);
+            var value = Optional.From(10);
         }
 
         [Test]
@@ -28,7 +28,7 @@ namespace HelperCoreTests.OptionalTests
         {
             var dummy = CreateDummy();
 
-            var optionalDummy = Optional<DummyClass>.From(dummy);
+            var optionalDummy = Optional.From(dummy);
 
             var optionalVal = optionalDummy.Value;
 
@@ -38,7 +38,7 @@ namespace HelperCoreTests.OptionalTests
         [Test]
         public void TestGettingValidOptionalValue()
         {
-            var optionalValue = Optional<int>.From(10);
+            var optionalValue = Optional.From(10);
 
             var optionalVal = optionalValue.Value;
 
@@ -65,34 +65,34 @@ namespace HelperCoreTests.OptionalTests
         [Test]
         public void TestCheckingContainsObject()
         {
-            var optionalDummy = Optional<DummyClass>.From(new DummyClass());
+            var optionalDummy = Optional.From(new DummyClass());
 
-            Assert.True(optionalDummy.IsPresent());
+            Assert.True(optionalDummy.Present);
         }
 
         [Test]
         public void TestCheckingContainsValue()
         {
-            var optionalValue = Optional<int>.From(10);
+            var optionalValue = Optional.From(10);
 
-            Assert.True(optionalValue.IsPresent());
+            Assert.True(optionalValue.Present);
         }
 
         [Test]
         public void TestCheckingContainsNullObject()
         {
             var optionalDummy = Optional<DummyClass>.FromNull();
-            Assert.False(optionalDummy.IsPresent());
+            Assert.False(optionalDummy.Present);
 
             var optionalDummy2 = Optional<DummyClass>.From(null);
-            Assert.False(optionalDummy2.IsPresent());
+            Assert.False(optionalDummy2.Present);
         }
 
         [Test]
         public void TestCheckingContainsNullValue()
         {
             var optionalValue = Optional<int>.FromNull();
-            Assert.False(optionalValue.IsPresent());
+            Assert.False(optionalValue.Present);
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace HelperCoreTests.OptionalTests
             var dummy = CreateDummy();
             var elseDummy = CreateDummy(2);
 
-            var optionalDummy = Optional<DummyClass>.From(dummy);
+            var optionalDummy = Optional.From(dummy);
 
             Assert.AreEqual(dummy, optionalDummy.OrElse(elseDummy));
         }
@@ -109,7 +109,7 @@ namespace HelperCoreTests.OptionalTests
         [Test]
         public void TestOrElseHasValue()
         {
-            var optionalValue = Optional<int>.From(10);
+            var optionalValue = Optional.From(10);
 
             Assert.AreEqual(10, optionalValue.OrElse(5));
         }
@@ -141,7 +141,7 @@ namespace HelperCoreTests.OptionalTests
         {
             var dummy = CreateDummy();
 
-            var optionalDummy = Optional<DummyClass>.From(dummy);
+            var optionalDummy = Optional.From(dummy);
 
             Assert.AreEqual(dummy, optionalDummy.OrDefault());
         }
@@ -149,7 +149,7 @@ namespace HelperCoreTests.OptionalTests
         [Test]
         public void TestDefaultHasValue()
         {
-            var optionalValue = Optional<int>.From(10);
+            var optionalValue = Optional.From(10);
 
             Assert.AreEqual(10, optionalValue.OrDefault());
         }
@@ -175,11 +175,51 @@ namespace HelperCoreTests.OptionalTests
         public void TestChainning()
         {
             var dummy = CreateDummy();
-            dummy.OptionalString = Optional<string>.From("world");
+            dummy.OptionalString = Optional.From("world");
 
-            var optionalDummy = Optional<DummyClass>.From(dummy);
+            var optionalDummy = Optional.From(dummy);
 
             Assert.AreEqual("world", optionalDummy.Value.OptionalString.Value);
+        }
+
+        [Test]
+        public void TestEquals()
+        {
+            var optionalValue = Optional.From(5);
+
+            Assert.True(optionalValue.Equals(5));
+        }
+
+        [Test]
+        public void TestNullOptionalEquals()
+        {
+            var optionalValue = Optional<int>.FromNull();
+
+            Assert.False(optionalValue.Equals(5));
+        }
+
+        [Test]
+        public void TestNullObjEquals()
+        {
+            var optionalValue = Optional.From(5);
+
+            Assert.False(optionalValue.Equals(null));
+        }
+
+        [Test]
+        public void TestHashCode()
+        {
+            var optionalValue = Optional.From(5);
+
+            Assert.AreEqual(5.GetHashCode(), optionalValue.GetHashCode());
+        }
+
+        [Test]
+        public void TestNullHashCode()
+        {
+            var optionalValue = Optional<int>.FromNull();
+
+            Assert.AreEqual(0, optionalValue.GetHashCode());
         }
 
         private DummyClass CreateDummy()
